@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Questions | SmartExam</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            background: #f5f7ff;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 16px;
+        }
+
+        h1 {
+            color: #2447a8;
+        }
+
+        .question-card {
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #d8deed;
+            border-radius: 12px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 16px;
+            margin: 8px 5px 0 0;
+            border: none;
+            border-radius: 7px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .approve {
+            background: #198754;
+        }
+
+        .reject {
+            background: #dc3545;
+        }
+
+        .back {
+            color: #2447a8;
+            text-decoration: none;
+        }
+
+        .message {
+            padding: 12px;
+            background: #eef2ff;
+            border-radius: 8px;
+            margin: 12px 0;
+        }
+    </style>
+</head>
+
+<body>
+<main class="container">
+
+    <h1>Review Generated Questions</h1>
+    <p>Review each AI-generated question before approving it.</p>
+
+    {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            <div class="message">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    {% for question in questions %}
+        <section class="question-card">
+
+            <h3>Question {{ loop.index }}</h3>
+
+            <p><strong>{{ question.question_text }}</strong></p>
+
+            <p>Type: {{ question.question_type }}</p>
+            <p>Difficulty: {{ question.difficulty }}</p>
+            <p>Marks: {{ question.marks }}</p>
+
+            {% if question.question_type == "MCQ" %}
+                <p>A. {{ question.option_a or "" }}</p>
+                <p>B. {{ question.option_b or "" }}</p>
+                <p>C. {{ question.option_c or "" }}</p>
+                <p>D. {{ question.option_d or "" }}</p>
+            {% endif %}
+
+            <p>
+                <strong>Correct Answer:</strong>
+                {{ question.correct_answer }}
+            </p>
+
+            {% if question.explanation %}
+                <p>
+                    <strong>Explanation:</strong>
+                    {{ question.explanation }}
+                </p>
+            {% endif %}
+
+            <form method="POST"
+                  action="{{ url_for('update_question_status',
+                                     question_id=question.id,
+                                     action='approve') }}"
+                  style="display:inline;">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <button type="submit" class="button approve">
+                    Approve
+                </button>
+            </form>
+
+            <form method="POST"
+                  action="{{ url_for('update_question_status',
+                                     question_id=question.id,
+                                     action='reject') }}"
+                  style="display:inline;">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <button type="submit" class="button reject">
+                    Reject
+                </button>
+            </form>
+
+        </section>
+
+    {% else %}
+        <p>No questions are waiting for review.</p>
+    {% endfor %}
+
+    <p>
+        <a class="back" href="{{ url_for('question_bank') }}">
+            Open Question Bank
+        </a>
+        &nbsp; | &nbsp;
+        <a class="back" href="{{ url_for('dashboard') }}">
+            Back to Dashboard
+        </a>
+    </p>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Questions | SmartExam</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            background: #f5f7ff;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 16px;
+        }
+
+        h1, h2, h3 {
+            color: #2447a8;
+        }
+
+        .question-card {
+            border: 1px solid #dfe5f2;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 18px 0;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            background: #fff3d6;
+            color: #875f00;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+        .button {
+            display: inline-block;
+            margin: 12px 8px 0 0;
+            padding: 11px 16px;
+            background: #2447a8;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+        }
+
+        .muted {
+            color: #727d94;
+        }
+    </style>
+</head>
+
+<body>
+<main class="container">
+
+    <h1>Generated Questions</h1>
+
+    <p>
+        Material: {{ material.title }}
+    </p>
+
+    <p class="muted">
+        Review the generated questions below. They are awaiting approval.
+    </p>
+
+    {% for question in saved_questions %}
+        <section class="question-card">
+            <h3>Question {{ loop.index }}</h3>
+
+            <p><strong>{{ question.question_text }}</strong></p>
+
+            <p>Type: {{ question.question_type }}</p>
+            <p>Difficulty: {{ question.difficulty }}</p>
+            <p>Marks: {{ question.marks }}</p>
+
+            {% if question.question_type == "MCQ" %}
+                <p>A. {{ question.option_a or "" }}</p>
+                <p>B. {{ question.option_b or "" }}</p>
+                <p>C. {{ question.option_c or "" }}</p>
+                <p>D. {{ question.option_d or "" }}</p>
+            {% endif %}
+
+            <p>
+                <strong>Correct answer:</strong>
+                {{ question.correct_answer }}
+            </p>
+
+            {% if question.explanation %}
+                <p>
+                    <strong>Explanation:</strong>
+                    {{ question.explanation }}
+                </p>
+            {% endif %}
+
+            <span class="status">Pending approval</span>
+        </section>
+    {% else %}
+        <p>No questions were generated.</p>
+    {% endfor %}
+
+    <a class="button" href="{{ url_for('generate_questions') }}">
+        Generate More Questions
+    </a>
+
+    <a class="button" href="{{ url_for('dashboard') }}">
+        Back to Dashboard
+    </a>
+
+</main>
+</body>
+</html>

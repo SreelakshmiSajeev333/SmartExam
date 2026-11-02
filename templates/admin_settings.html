@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>System Overview | SmartExam</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            color: #263238;
+            margin: 0;
+        }
+
+        .nav {
+            background: #263b80;
+            color: white;
+            padding: 18px 6%;
+        }
+
+        .nav a { color: white; }
+
+        .wrap {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 18px;
+        }
+
+        .panel {
+            background: white;
+            padding: 24px;
+            border-radius: 10px;
+            line-height: 1.8;
+        }
+
+        .panel h3 { color: #263b80; }
+
+        .note {
+            background: #eef1fb;
+            padding: 12px;
+            border-radius: 6px;
+            color: #34436b;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="nav">
+    <h2>⚙️ System Overview</h2>
+    <a href="{{ url_for('admin_dashboard') }}">
+        ← Admin Dashboard
+    </a>
+</header>
+
+<main class="wrap">
+
+    <section class="panel">
+
+        <h3>SmartExam Configuration</h3>
+
+        <p>
+            This page displays basic application information.
+            Sensitive values such as API keys and passwords
+            are intentionally not displayed.
+        </p>
+
+        <ul>
+            <li>Application: SmartExam</li>
+            <li>Database: SQLite with Flask-SQLAlchemy</li>
+            <li>
+                AI integration: Gemini API, configured through
+                environment variables
+            </li>
+            <li>Supported uploads: PDF and TXT</li>
+            <li>Access: Administrator-only page</li>
+        </ul>
+
+        <p class="note">
+            This version provides a read-only overview.
+            Security keys, API credentials and other environment
+            settings should be managed in the server environment,
+            not through a public web form.
+        </p>
+
+    </section>
+
+</main>
+
+</body>
+</html>
+```

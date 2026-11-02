@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Question Generation | SmartExam</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            background: #f5f7ff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 16px;
+        }
+
+        h1, h2 {
+            color: #2447a8;
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d8deed;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 24px;
+            padding: 12px 22px;
+            background: #2447a8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .message {
+            margin: 15px 0;
+            padding: 12px;
+            background: #eef2ff;
+            border-radius: 8px;
+        }
+
+        a {
+            color: #2447a8;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+<main class="container">
+
+    <h1>AI Question Generation</h1>
+
+    <p>
+        Generate candidate questions from uploaded study materials
+        using Generative AI.
+    </p>
+
+    {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            <div class="message">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <form action="{{ url_for('generate_questions') }}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <label for="material_id">Select Study Material</label>
+
+        <select id="material_id" name="material_id" required>
+            <option value="">-- Select a material --</option>
+
+            {% for material in materials %}
+                <option value="{{ material.id }}">
+                    {{ material.title }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label for="question_type">Question Type</label>
+
+        <select id="question_type" name="question_type" required>
+            <option value="MCQ">Multiple Choice Questions (MCQ)</option>
+            <option value="True/False">True/False</option>
+            <option value="Short Answer">Short Answer</option>
+            <option value="Long Answer">Long Answer</option>
+        </select>
+
+        <label for="difficulty">Difficulty Level</label>
+
+        <select id="difficulty" name="difficulty" required>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+        </select>
+
+        <label for="question_count">Number of Questions</label>
+
+        <input
+            type="number"
+            id="question_count"
+            name="question_count"
+            min="1"
+            max="20"
+            value="5"
+            required
+        >
+
+        <label for="marks">Marks Per Question</label>
+
+        <input
+            type="number"
+            id="marks"
+            name="marks"
+            min="1"
+            max="100"
+            value="2"
+            required
+        >
+
+        <button type="submit">Generate Questions</button>
+
+    </form>
+
+    <p style="margin-top: 30px;">
+        <a href="{{ url_for('dashboard') }}">← Back to Dashboard</a>
+        &nbsp; | &nbsp;
+        <a href="{{ url_for('logout') }}">Log Out</a>
+    </p>
+
+</main>
+</body>
+</html>
+```

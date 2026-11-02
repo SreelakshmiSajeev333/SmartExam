@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Accounts | SmartExam</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<style>
+    body {
+        background: #f5f7ff;
+        padding: 30px 20px;
+        color: #243451;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: 30px auto;
+        padding: 28px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 12px 40px rgba(36, 71, 168, 0.08);
+    }
+
+    h1 {
+        color: #20345b;
+    }
+
+    .hint {
+        color: #727d94;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 13px 10px;
+        text-align: left;
+        border-bottom: 1px solid #edf0f8;
+    }
+
+    th {
+        color: #20345b;
+        background: #f7f8fc;
+    }
+
+    button {
+        border: none;
+        border-radius: 7px;
+        padding: 9px 13px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .approve {
+        background: #e6f7ed;
+        color: #17663a;
+    }
+
+    .reject {
+        background: #fff0ee;
+        color: #a1261b;
+    }
+
+    .actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .empty {
+        padding: 20px;
+        background: #f7f8fc;
+        border-radius: 8px;
+    }
+
+    a {
+        color: #315bd6;
+        text-decoration: none;
+    }
+
+    @media (max-width: 650px) {
+        .container {
+            padding: 18px;
+        }
+
+        table {
+            font-size: 13px;
+        }
+
+        th, td {
+            padding: 9px 5px;
+        }
+
+        .actions {
+            flex-direction: column;
+        }
+    }
+</style>
+
+</head>
+
+<body>
+<div class="container">
+
+<h1>Pending Account Approvals</h1>
+
+<p class="hint">
+    Review new Teacher and Student registrations.
+    Approved users can log in and use their role's features.
+</p>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% if users %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.role|title }}</td>
+
+                    <td>
+                        <div class="actions">
+
+                            <form method="POST"
+                                  action="{{ url_for('admin_update_user_approval', user_id=user.id) }}">
+                                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="action" value="approve">
+                                <button class="approve" type="submit">
+                                    Approve
+                                </button>
+                            </form>
+
+                            <form method="POST"
+                                  action="{{ url_for('admin_update_user_approval', user_id=user.id) }}"
+                                  onsubmit="return confirm('Reject and delete this pending account?');">
+                                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="action" value="reject">
+                                <button class="reject" type="submit">
+                                    Reject
+                                </button>
+                            </form>
+
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% else %}
+
+    <p class="empty">
+        There are no pending accounts right now.
+    </p>
+
+{% endif %}
+
+<p>
+    <a href="{{ url_for('admin_dashboard') }}">
+        ← Back to Admin Dashboard
+    </a>
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ exam.title }} - SmartExam</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            color: #263238;
+        }
+
+        header {
+            background: #263b80;
+            color: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .timer {
+            background: white;
+            color: #263b80;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .wrap {
+            max-width: 900px;
+            margin: 28px auto;
+            padding: 0 18px;
+        }
+
+        .notice {
+            background: #fff3cd;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 16px 0;
+            line-height: 1.6;
+        }
+
+        .question {
+            background: white;
+            padding: 22px;
+            margin: 16px 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .option {
+            display: block;
+            margin: 14px 0;
+            line-height: 1.5;
+        }
+
+        .written {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 1px solid #ccd2df;
+            border-radius: 7px;
+            font: inherit;
+            resize: vertical;
+        }
+
+        .marks {
+            color: #687386;
+            font-size: 14px;
+        }
+
+        .submit-button {
+            background: #263b80;
+            color: white;
+            border: none;
+            padding: 13px 22px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 15px 0 35px;
+        }
+
+        .submit-button:hover {
+            background: #4056a1;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>{{ exam.title }}</h1>
+
+    <div class="timer">
+        Time left: <span id="timer">Loading...</span>
+    </div>
+</header>
+
+<main class="wrap">
+
+    <p>{{ exam.description or 'Answer all the questions below.' }}</p>
+
+    <div class="notice">
+        <strong>Duration:</strong> {{ exam.duration_minutes }} minutes.
+        <br>
+        Submit your answers before the timer ends. Written answers may
+        require evaluation by your teacher.
+    </div>
+
+    <form id="examForm" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        {% for question in questions %}
+
+        <section class="question">
+
+            <h3>
+                Question {{ loop.index }}
+                <span class="marks">({{ question.marks }} marks)</span>
+            </h3>
+
+            <p>{{ question.question_text }}</p>
+
+            {% if question.question_type == 'MCQ' %}
+
+                {% set saved = saved_answers.get(question.id, '') %}
+
+                {% for letter, option in [
+                    ('a', question.option_a),
+                    ('b', question.option_b),
+                    ('c', question.option_c),
+                    ('d', question.option_d)
+                ] %}
+
+                    {% if option %}
+                    <label class="option">
+                        <input
+                            type="radio"
+                            name="answer_{{ question.id }}"
+                            value="{{ letter }}"
+                            {% if saved|string|lower == letter or saved|string == option|string %}
+                                checked
+                            {% endif %}
+                        >
+                        {{ letter|upper }}. {{ option }}
+                    </label>
+                    {% endif %}
+
+                {% endfor %}
+
+            {% elif question.question_type == 'True/False' %}
+
+                {% set saved = saved_answers.get(question.id, '') %}
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="answer_{{ question.id }}"
+                        value="True"
+                        {% if saved|string|lower == 'true' %}checked{% endif %}
+                    >
+                    True
+                </label>
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="answer_{{ question.id }}"
+                        value="False"
+                        {% if saved|string|lower == 'false' %}checked{% endif %}
+                    >
+                    False
+                </label>
+
+            {% else %}
+
+                <textarea
+                    class="written"
+                    name="answer_{{ question.id }}"
+                    placeholder="Write your answer here..."
+                >{{ saved_answers.get(question.id, '') }}</textarea>
+
+            {% endif %}
+
+        </section>
+
+        {% endfor %}
+
+        <button type="submit" class="submit-button">
+            Submit Examination
+        </button>
+
+    </form>
+
+</main>
+
+<script>
+    // Jinja renders this value into JavaScript as a number.
+    const initialSeconds = Number("{{ remaining_seconds|int }}");
+
+    let remaining = Number.isFinite(initialSeconds)
+        ? Math.max(0, initialSeconds)
+        : 0;
+
+    const timerDisplay = document.getElementById("timer");
+    const examForm = document.getElementById("examForm");
+
+    let submitted = false;
+
+    function updateTimer() {
+        const minutes = Math.floor(remaining / 60);
+        const seconds = remaining % 60;
+
+        timerDisplay.textContent =
+            String(minutes).padStart(2, "0") + ":" +
+            String(seconds).padStart(2, "0");
+
+        if (remaining <= 0) {
+            if (!submitted) {
+                submitted = true;
+                alert("Time is up! Your answers will be submitted.");
+                examForm.submit();
+            }
+            return;
+        }
+
+        remaining--;
+    }
+
+    examForm.addEventListener("submit", function(event) {
+        if (submitted) {
+            event.preventDefault();
+            return;
+        }
+
+        if (!confirm("Are you sure you want to submit your examination?")) {
+            event.preventDefault();
+            return;
+        }
+
+        submitted = true;
+    });
+
+    updateTimer();
+
+    setInterval(function() {
+        if (!submitted) {
+            updateTimer();
+        }
+    }, 1000);
+</script>
+
+</body>
+</html>
+```

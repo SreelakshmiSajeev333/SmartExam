@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Bank | SmartExam</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Question Bank</h1>
+        <p>View your approved examination questions here.</p>
+
+        <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+
+        <hr>
+
+        {% if questions %}
+            {% for question in questions %}
+                <div class="card">
+                    <h3>{{ loop.index }}. {{ question.question_text }}</h3>
+
+                    <p><strong>Type:</strong> {{ question.question_type }}</p>
+                    <p><strong>Difficulty:</strong> {{ question.difficulty }}</p>
+                    <p><strong>Marks:</strong> {{ question.marks }}</p>
+
+                    {% if question.question_type == "MCQ" %}
+                        <p>A. {{ question.option_a }}</p>
+                        <p>B. {{ question.option_b }}</p>
+                        <p>C. {{ question.option_c }}</p>
+                        <p>D. {{ question.option_d }}</p>
+                    {% endif %}
+
+                    <p><strong>Correct Answer:</strong> {{ question.correct_answer or "Not provided" }}</p>
+
+                    {% if question.explanation %}
+                        <p><strong>Explanation:</strong> {{ question.explanation }}</p>
+                    {% endif %}
+                </div>
+                <hr>
+            {% endfor %}
+        {% else %}
+            <p>No approved questions are available yet.</p>
+            <p>Questions will appear here after they are approved.</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>

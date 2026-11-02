@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Review Student Answers - SmartExam</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            color: #263238;
+        }
+
+        header {
+            background: #263b80;
+            color: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .wrap {
+            max-width: 950px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .question {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            margin: 16px 0;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 1px solid #ccd2df;
+            border-radius: 7px;
+            font: inherit;
+        }
+
+        input[type="number"] {
+            padding: 9px;
+            width: 130px;
+            border: 1px solid #ccd2df;
+            border-radius: 7px;
+        }
+
+        button {
+            background: #263b80;
+            color: white;
+            border: 0;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .flash {
+            background: #fff3cd;
+            padding: 12px;
+            border-radius: 7px;
+            margin: 12px 0;
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <h1>Evaluate: {{ attempt.exam.title }}</h1>
+
+    <a href="{{ url_for('teacher_evaluation') }}">
+        Back to Evaluations
+    </a>
+</header>
+
+<main class="wrap">
+    <p>
+        <strong>Student:</strong>
+        {{ attempt.student.name }}
+        ({{ attempt.student.email }})
+    </p>
+
+    <p>
+        <strong>Objective Marks:</strong>
+        {{ '%.2f'|format(attempt.score or 0) }}
+    </p>
+
+    {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <form method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        {% if subjective_answers %}
+
+            {% for answer in subjective_answers %}
+                <section class="question">
+                    <h3>Question ({{ answer.question.marks }} marks)</h3>
+
+                    <p>{{ answer.question.question_text }}</p>
+
+                    <p><strong>Student Answer:</strong></p>
+                    <div>{{ answer.answer_text or 'No answer provided.' }}</div>
+
+                    <p><strong>Model Answer for Reference:</strong></p>
+                    <div>
+                        {{ answer.question.correct_answer or 'No model answer saved.' }}
+                    </div>
+
+                    <br>
+
+                    <label>
+                        Marks awarded (0–{{ answer.question.marks }}):
+                        <br>
+
+                        <input
+                            type="number"
+                            name="marks_{{ answer.id }}"
+                            min="0"
+                            max="{{ answer.question.marks }}"
+                            step="0.5"
+                            value="{{ answer.marks_awarded if answer.marks_awarded is not none else '' }}"
+                            required
+                        >
+                    </label>
+                </section>
+            {% endfor %}
+
+            <button type="submit">Save Evaluation</button>
+
+        {% else %}
+
+            <p>There are no written answers requiring manual evaluation.</p>
+
+        {% endif %}
+
+    </form>
+</main>
+</body>
+</html>

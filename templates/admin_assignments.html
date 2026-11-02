@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Teacher Assignments | SmartExam</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            color: #263238;
+            margin: 0;
+        }
+
+        /* Top Navigation */
+        .nav {
+            background: #263b80;
+            color: white;
+            padding: 18px 6%;
+        }
+
+        .nav h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        /* Main Container */
+        .wrap {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 18px;
+        }
+
+        /* Page Heading */
+        .page-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        .page-heading h2 {
+            color: #263b80;
+            font-size: 26px;
+            margin: 0;
+        }
+
+        .back {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #e9edfb;
+            color: #263b80;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .back:hover {
+            background: #dce3fa;
+        }
+
+        /* Panels */
+        .panel {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+        }
+
+        .panel h3 {
+            color: #263b80;
+            font-size: 20px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .panel p {
+            color: #687386;
+            line-height: 1.7;
+        }
+
+        /* Form */
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #263b80;
+            font-weight: bold;
+        }
+
+        select {
+            display: block;
+            padding: 10px;
+            margin: 8px 0 18px;
+            width: 100%;
+            border: 1px solid #ccd3e2;
+            border-radius: 5px;
+            background: white;
+            font-size: 14px;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #5269c9;
+        }
+
+        /* Buttons */
+        .btn {
+            background: #263b80;
+            color: white;
+            border: 0;
+            padding: 10px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #192c66;
+        }
+
+        .danger {
+            background: #b83232;
+        }
+
+        .danger:hover {
+            background: #922626;
+        }
+
+        /* Flash Messages */
+        .flash {
+            padding: 12px 16px;
+            background: #fff3cd;
+            color: #664d03;
+            margin: 0 0 18px;
+            border-radius: 6px;
+            border: 1px solid #ffe69c;
+        }
+
+        /* Assignments Table */
+        .tablewrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: collapse;
+        }
+
+        td,
+        th {
+            text-align: left;
+            padding: 13px 12px;
+            border-bottom: 1px solid #e7ebf5;
+        }
+
+        th {
+            color: #263b80;
+            background: #eef1fb;
+            font-size: 14px;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        tbody tr:hover {
+            background: #fafbff;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .nav {
+                padding: 18px 5%;
+            }
+
+            .nav h2 {
+                font-size: 21px;
+            }
+
+            .wrap {
+                margin: 22px auto;
+                padding: 0 12px;
+            }
+
+            .page-heading h2 {
+                font-size: 22px;
+            }
+
+            .panel {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Navigation -->
+    <header class="nav">
+        <h2>SmartExam</h2>
+    </header>
+
+    <main class="wrap">
+
+        <!-- Page Heading and Dashboard Navigation -->
+        <div class="page-heading">
+
+            <h2>👩‍🏫 Teacher-Course Assignments</h2>
+
+            <a class="back" href="{{ url_for('admin_dashboard') }}">
+                ← Admin Dashboard
+            </a>
+
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages() %}
+
+            {% for message in messages %}
+
+                <div class="flash">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endwith %}
+
+        <!-- Assign Teacher Panel -->
+        <section class="panel">
+
+            <h3>Assign a Teacher</h3>
+
+            {% if not teachers %}
+
+                <p>Create or register a teacher account first.</p>
+
+            {% elif not courses %}
+
+                <p>Create a course first.</p>
+
+            {% else %}
+
+                <form method="post">
+
+                    <label for="teacher_id">Teacher</label>
+
+                    <select name="teacher_id" id="teacher_id" required>
+                        <option value="">Choose teacher</option>
+
+                        {% for teacher in teachers %}
+
+                            <option value="{{ teacher.id }}">
+                                {{ teacher.name }} — {{ teacher.email }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                    <label for="course_id">Course</label>
+
+                    <select name="course_id" id="course_id" required>
+                        <option value="">Choose course</option>
+
+                        {% for course in courses %}
+
+                            <option value="{{ course.id }}">
+                                {{ course.name }} ({{ course.code }})
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                    <button class="btn" type="submit">
+                        Assign Teacher
+                    </button>
+
+                </form>
+
+            {% endif %}
+
+        </section>
+
+        <!-- Current Assignments Panel -->
+        <section class="panel">
+
+            <h3>Current Assignments ({{ assignments|length }})</h3>
+
+            <div class="tablewrap">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Teacher</th>
+                            <th>Email</th>
+                            <th>Course</th>
+                            <th>Code</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for item in assignments %}
+
+                            <tr>
+
+                                <td>{{ item.teacher.name }}</td>
+
+                                <td>{{ item.teacher.email }}</td>
+
+                                <td>{{ item.course.name }}</td>
+
+                                <td>{{ item.course.code }}</td>
+
+                                <td>
+
+                                    <form
+                                        method="post"
+                                        action="{{ url_for(
+                                            'admin_delete_assignment',
+                                            assignment_id=item.id
+                                        ) }}"
+                                        onsubmit="return confirm(
+                                            'Remove this assignment?'
+                                        );"
+                                    >
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                                        <button
+                                            class="btn danger"
+                                            type="submit"
+                                        >
+                                            Remove
+                                        </button>
+
+                                    </form>
+
+                                </td>
+
+                            </tr>
+
+                        {% else %}
+
+                            <tr>
+                                <td colspan="5">No assignments yet.</td>
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>

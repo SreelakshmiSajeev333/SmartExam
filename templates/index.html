@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartExam | Smart Examination Platform</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+
+        <div class="logo">SmartExam<span>.</span></div>
+
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#roles">How It Works</a>
+        </div>
+
+        <div class="nav-actions">
+            <a href="{{ url_for('login') }}" class="login-button">Log In</a>
+            <a href="{{ url_for('register') }}" class="nav-button">Register</a>
+        </div>
+
+    </nav>
+
+
+    <main>
+
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+
+            <div class="hero-content">
+
+                <span class="badge">AI-POWERED EXAMINATION PLATFORM</span>
+
+                <h1>
+                    A Smarter Approach to<br>
+                    <span>Examinations.</span>
+                </h1>
+
+                <p>
+                    AI-powered question generation and seamless examination
+                    management, all in one platform.
+                </p>
+
+                <a href="#features" class="primary-button">
+                    Explore SmartExam →
+                </a>
+
+                <div class="hero-note">
+                    AI-Powered Question Generation · Seamless Exam Management
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Features Section -->
+        <section class="features" id="features">
+
+            <h2>Everything You Need</h2>
+
+            <p class="section-description">
+                Tools designed to simplify the examination process.
+            </p>
+
+            <div class="feature-grid">
+
+                <div class="feature-card">
+                    <div class="icon">✦</div>
+
+                    <h3>AI Question Generation</h3>
+
+                    <p>
+                        Generate candidate questions from uploaded study materials.
+                    </p>
+                </div>
+
+
+                <div class="feature-card">
+                    <div class="icon">▤</div>
+
+                    <h3>Question Bank</h3>
+
+                    <p>
+                        Organise, review, and manage questions in one place.
+                    </p>
+                </div>
+
+
+                <div class="feature-card">
+                    <div class="icon">✓</div>
+
+                    <h3>Online Examinations</h3>
+
+                    <p>
+                        Create examinations and manage student assessments.
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- User Roles Section -->
+        <section class="roles" id="roles">
+
+            <h2>Designed for Every Role</h2>
+
+            <p class="section-description">
+                A dedicated experience for each type of user.
+            </p>
+
+            <div class="role-grid">
+
+                <div class="role-card">
+
+                    <h3>Administrator</h3>
+
+                    <p>
+                        Manage users, courses, and academic structure.
+                    </p>
+
+                    <span>Administration</span>
+
+                </div>
+
+
+                <div class="role-card">
+
+                    <h3>Teacher / Examiner</h3>
+
+                    <p>
+                        Generate questions, build exams, and evaluate answers.
+                    </p>
+
+                    <span>Teaching &amp; Assessment</span>
+
+                </div>
+
+
+                <div class="role-card">
+
+                    <h3>Student</h3>
+
+                    <p>
+                        Attend exams , review scores, and track progress.
+                    </p>
+
+                    <span>Learning &amp; Evaluation</span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer>
+
+        <p>
+            © 2026 SmartExam | AI-Assisted Question Generation and Examination Management System
+        </p>
+
+    </footer>
+
+</body>
+
+</html>
+

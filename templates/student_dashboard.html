@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - SmartExam</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            color: #263238;
+        }
+
+        header {
+            background: #263b80;
+            color: white;
+            padding: 20px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+            background: #e74c3c;
+            padding: 10px 16px;
+            border-radius: 7px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            margin-bottom: 30px;
+        }
+
+        .welcome h2 {
+            color: #263b80;
+            font-size: 28px;
+        }
+
+        .welcome p {
+            color: #687386;
+            line-height: 1.6;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 22px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .card h3 {
+            color: #263b80;
+            margin-top: 0;
+        }
+
+        .card p {
+            color: #687386;
+            line-height: 1.6;
+        }
+
+        .button {
+            display: inline-block;
+            background: #5269c9;
+            color: white;
+            padding: 11px 16px;
+            text-decoration: none;
+            border-radius: 7px;
+            margin-top: 8px;
+        }
+
+        .button:hover {
+            background: #4056a1;
+        }
+
+        .flash {
+            background: #fff3cd;
+            color: #664d03;
+            padding: 12px 15px;
+            border-radius: 7px;
+            margin-bottom: 18px;
+        }
+
+        footer {
+            text-align: center;
+            color: #8992a3;
+            padding: 30px 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>SmartExam | Student Portal</h1>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</header>
+
+<main class="container">
+
+    <section class="welcome">
+        <h2>Welcome, {{ session.get('user_name', 'Student') }}</h2>
+
+        <p>
+            Welcome to SmartExam. You can access published examinations,
+            submit your answers, and track your examination results here.
+        </p>
+    </section>
+
+    {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <section class="grid">
+
+        <article class="card">
+            <h3>Available Examinations</h3>
+            <p>View published examinations and complete your tests.</p>
+
+            <a class="button" href="{{ url_for('student_exams') }}">
+                View Exams
+            </a>
+        </article>
+
+        <article class="card">
+            <h3>My Results</h3>
+            <p>Check your examination attempts, marks, and evaluation status.</p>
+
+            <a class="button" href="{{ url_for('student_results') }}">
+                View Results
+            </a>
+        </article>
+
+
+    </section>
+
+</main>
+
+<footer>
+    SmartExam &copy; 2026 | Intelligent Examination Management System
+</footer>
+
+</body>
+</html>
+```

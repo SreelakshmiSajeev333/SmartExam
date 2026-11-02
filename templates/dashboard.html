@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | SmartExam</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 7%;
+            background: white;
+            border-bottom: 1px solid #e8ecf6;
+        }
+
+        .dashboard-header a {
+            text-decoration: none;
+        }
+
+        .dashboard-main {
+            padding: 45px 7%;
+        }
+
+        .welcome-panel {
+            background: linear-gradient(135deg, #2447a8, #667eea);
+            color: white;
+            padding: 35px;
+            border-radius: 16px;
+            margin-bottom: 35px;
+        }
+
+        .welcome-panel h1 {
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .welcome-panel p {
+            color: #eef2ff;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+            margin-top: 25px;
+        }
+
+        .dashboard-card {
+            background: white;
+            padding: 25px;
+            border: 1px solid #e5eaf5;
+            border-radius: 12px;
+        }
+
+        .dashboard-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .dashboard-card p {
+            color: #727d94;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .status {
+            display: inline-block;
+            margin-top: 18px;
+            background: #fff3d6;
+            color: #875f00;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .card-button {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 10px 15px;
+            background: #2447a8;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+        }
+
+        .card-button:hover {
+            background: #193783;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #727d94;
+        }
+
+        @media (max-width: 800px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 550px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-main {
+                padding: 25px 5%;
+            }
+
+            .welcome-panel {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="dashboard-header">
+
+        <div class="logo">SmartExam<span>.</span></div>
+
+        <a href="{{ url_for('logout') }}" class="login-button">
+            Log Out
+        </a>
+
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="dashboard-main">
+
+        <!-- Welcome Section -->
+        <section class="welcome-panel">
+
+            <h1>Welcome, {{ session['user_name'] }}</h1>
+
+            <p>
+                Your role: {{ session['user_role']|title }}
+            </p>
+
+            <p>
+                Turn your study materials into questions and build examinations with ease.
+            </p>
+
+        </section>
+
+        <h2>Your Workspace</h2>
+
+        <p class="section-description">
+            Everything you need to create, manage, and evaluate examinations.
+        </p>
+
+        <!-- Dashboard Cards -->
+        <section class="dashboard-grid">
+
+            <!-- Study Materials -->
+            <div class="dashboard-card">
+
+                <h3>📄 Study Materials</h3>
+
+                <p>
+                    Upload and organise learning materials to support
+                    AI-powered question generation.
+                </p>
+
+                <a href="{{ url_for('upload_material') }}"
+                   class="card-button">
+                    Upload Material
+                </a>
+
+            </div>
+
+            <!-- AI Question Generation -->
+            <div class="dashboard-card">
+
+                <h3>🤖 AI Question Generation</h3>
+
+                <p>
+                    Generate questions from uploaded study materials
+                    with AI assistance.
+                </p>
+
+                <a href="{{ url_for('generate_questions') }}"
+                   class="card-button">
+                    Generate Questions
+                </a>
+
+            </div>
+
+            <!-- Review Questions -->
+            <div class="dashboard-card">
+
+                <h3>📝 Review Questions</h3>
+
+                <p>
+                    Review, edit, and approve AI-generated questions
+                    before adding them to the Question Bank.
+                </p>
+
+                <a href="{{ url_for('review_questions') }}"
+                   class="card-button">
+                    Review Questions
+                </a>
+
+            </div>
+
+            <!-- Question Bank -->
+            <div class="dashboard-card">
+
+                <h3>📚 Question Bank</h3>
+
+                <p>
+                    Access and manage approved questions
+                    for creating examinations.
+                </p>
+
+                <a href="{{ url_for('question_bank') }}"
+                   class="card-button">
+                    Open Question Bank
+                </a>
+
+            </div>
+
+            <!-- Exam Builder -->
+            <div class="dashboard-card">
+
+                <h3>📝 Exam Builder</h3>
+
+                <p>
+                    Create examinations using approved questions
+                    from your Question Bank.
+                </p>
+
+                <a href="{{ url_for('exam_builder') }}"
+                   class="card-button">
+                    Create Exam
+                </a>
+
+            </div>
+
+            <!-- Evaluation -->
+            <div class="dashboard-card">
+
+                <h3>📊 Evaluation</h3>
+
+                <p>
+                    Evaluate student responses, review submissions,
+                    and track examination results.
+                </p>
+
+                <a href="{{ url_for('teacher_evaluation') }}"
+                   class="card-button">
+                    Open Evaluation
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 SmartExam | Smart Examination Platform</p>
+    </footer>
+
+</body>
+
+</html>

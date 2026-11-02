@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Examination Reports | SmartExam</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            color: #263238;
+            margin: 0;
+        }
+
+        /* Top Navigation */
+        .nav {
+            background: #263b80;
+            color: white;
+            padding: 18px 6%;
+        }
+
+        .nav h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        /* Main Container */
+        .wrap {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 18px;
+        }
+
+        /* Page Heading */
+        .page-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        .page-heading h2 {
+            color: #263b80;
+            font-size: 26px;
+            margin: 0;
+        }
+
+        .back {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #e9edfb;
+            color: #263b80;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .back:hover {
+            background: #dce3fa;
+        }
+
+        /* Panels */
+        .panel {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            margin-bottom: 22px;
+            overflow-x: auto;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+        }
+
+        .panel h3 {
+            color: #263b80;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        /* Flash Messages */
+        .flash {
+            padding: 12px 16px;
+            background: #fff3cd;
+            color: #664d03;
+            margin: 0 0 18px;
+            border-radius: 6px;
+            border: 1px solid #ffe69c;
+        }
+
+        /* Reports Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 750px;
+        }
+
+        td,
+        th {
+            text-align: left;
+            padding: 11px;
+            border-bottom: 1px solid #e7ebf5;
+        }
+
+        th {
+            color: #263b80;
+            background: #eef1fb;
+            font-size: 14px;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        tbody tr:hover {
+            background: #fafbff;
+        }
+
+        /* Student Submissions */
+        details {
+            margin-top: 8px;
+        }
+
+        summary {
+            cursor: pointer;
+            color: #263b80;
+            font-weight: 500;
+            padding: 8px 0;
+        }
+
+        summary:hover {
+            color: #5269c9;
+        }
+
+        details table {
+            margin-top: 10px;
+        }
+
+        .pill {
+            padding: 4px 8px;
+            border-radius: 5px;
+            background: #edf0fa;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .nav {
+                padding: 18px 5%;
+            }
+
+            .nav h2 {
+                font-size: 21px;
+            }
+
+            .wrap {
+                margin: 22px auto;
+                padding: 0 12px;
+            }
+
+            .page-heading h2 {
+                font-size: 22px;
+            }
+
+            .panel {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Navigation -->
+    <header class="nav">
+        <h2>SmartExam</h2>
+    </header>
+
+    <main class="wrap">
+
+        <!-- Page Heading and Dashboard Navigation -->
+        <div class="page-heading">
+
+            <h2>📊 Examination Reports</h2>
+
+            <a class="back" href="{{ url_for('admin_dashboard') }}">
+                ← Admin Dashboard
+            </a>
+
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages() %}
+
+            {% for message in messages %}
+
+                <div class="flash">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endwith %}
+
+        <!-- Examination Reports -->
+        <section class="panel">
+
+            <h3>All Examinations ({{ report_rows|length }})</h3>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Exam</th>
+                        <th>Created By</th>
+                        <th>Status</th>
+                        <th>Total Marks</th>
+                        <th>Attempts</th>
+                        <th>Submitted</th>
+                        <th>Pending Evaluation</th>
+                        <th>Evaluated</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for row in report_rows %}
+
+                    <tr>
+                        <td>{{ row.exam.title }}</td>
+                        <td>{{ row.exam.created_by }}</td>
+                        <td>{{ row.exam.status|title }}</td>
+                        <td>{{ row.exam.total_marks }}</td>
+                        <td>{{ row.attempt_count }}</td>
+                        <td>{{ row.submitted_count }}</td>
+                        <td>{{ row.pending_count }}</td>
+                        <td>{{ row.evaluated_count }}</td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="8">
+
+                            <details>
+
+                                <summary>
+                                    View student submissions
+                                    ({{ row.submitted_count }})
+                                </summary>
+
+                                <table>
+
+                                    <thead>
+                                        <tr>
+                                            <th>Student</th>
+                                            <th>Email</th>
+                                            <th>Submitted</th>
+                                            <th>Status</th>
+                                            <th>Score</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                        {% for attempt in row.attempts
+                                           if attempt.submitted_at %}
+
+                                        <tr>
+
+                                            <td>
+                                                {{ attempt.student.name }}
+                                            </td>
+
+                                            <td>
+                                                {{ attempt.student.email }}
+                                            </td>
+
+                                            <td>
+                                                {{ attempt.submitted_at.strftime(
+                                                    '%Y-%m-%d %H:%M'
+                                                ) if attempt.submitted_at else '—' }}
+                                            </td>
+
+                                            <td>
+                                                {{ attempt.status
+                                                    |replace('_', ' ')
+                                                    |title }}
+                                            </td>
+
+                                            <td>
+                                                {% if attempt.score is not none %}
+                                                    {{ attempt.score }}
+                                                {% else %}
+                                                    Pending
+                                                {% endif %}
+                                                / {{ row.exam.total_marks }}
+                                            </td>
+
+                                        </tr>
+
+                                        {% else %}
+
+                                        <tr>
+                                            <td colspan="5">
+                                                No submitted attempts yet.
+                                            </td>
+                                        </tr>
+
+                                        {% endfor %}
+
+                                    </tbody>
+
+                                </table>
+
+                            </details>
+
+                        </td>
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="8">
+                            No examinations found.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>

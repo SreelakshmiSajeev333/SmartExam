@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Exams - SmartExam</title>
+
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            color: #263238;
+        }
+        header {
+            background: #263b80;
+            color: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        header a {
+            color: white;
+            text-decoration: none;
+        }
+        .wrap {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .exam {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            margin: 16px 0;
+            box-shadow: 0 4px 14px #0000000a;
+        }
+        .meta { color: #687386; }
+        .button {
+            display: inline-block;
+            background: #5269c9;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 7px;
+        }
+        .flash {
+            background: #fff3cd;
+            padding: 12px;
+            border-radius: 7px;
+            margin: 12px 0;
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <h1>Available Examinations</h1>
+    <nav>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        &nbsp; | &nbsp;
+        <a href="{{ url_for('student_results') }}">My Results</a>
+    </nav>
+</header>
+
+<main class="wrap">
+    <h2>Published Exams</h2>
+
+    {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    {% if exams %}
+        {% for exam in exams %}
+            <article class="exam">
+                <h3>{{ exam.title }}</h3>
+
+                <p>{{ exam.description or 'No description provided.' }}</p>
+
+                <p class="meta">
+                    Duration: {{ exam.duration_minutes }} minutes
+                    | Total marks: {{ exam.total_marks }}
+                </p>
+
+                {% set attempt = attempts.get(exam.id) %}
+
+                {% if attempt %}
+                    <p class="meta">
+                        Attempt status:
+                        {{ attempt.status.replace('_', ' ')|title }}
+                    </p>
+
+                    {% if attempt.status == 'in_progress' %}
+                        <a class="button"
+                           href="{{ url_for('take_exam', exam_id=exam.id) }}">
+                            Resume Exam
+                        </a>
+                    {% else %}
+                        <a class="button"
+                           href="{{ url_for('student_results') }}">
+                            View Result
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <a class="button"
+                       href="{{ url_for('take_exam', exam_id=exam.id) }}">
+                        Start Exam
+                    </a>
+                {% endif %}
+            </article>
+        {% endfor %}
+    {% else %}
+        <p>No published examinations are available right now.</p>
+    {% endif %}
+</main>
+</body>
+</html>
+```

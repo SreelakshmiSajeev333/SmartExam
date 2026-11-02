@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Evaluate Exams - SmartExam</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            color: #263238;
+        }
+
+        header {
+            background: #263b80;
+            color: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .wrap {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .attempt {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            margin: 16px 0;
+            box-shadow: 0 4px 12px #0000000a;
+        }
+
+        .button {
+            display: inline-block;
+            background: #5269c9;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 7px;
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <h1>Student Answer Evaluation</h1>
+    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+</header>
+
+<main class="wrap">
+    <h2>Pending Evaluations</h2>
+
+    {% if attempts %}
+
+        {% for attempt in attempts %}
+            <article class="attempt">
+                <h3>{{ attempt.exam.title }}</h3>
+
+                <p>
+                    Student:
+                    {{ attempt.student.name }}
+                    ({{ attempt.student.email }})
+                </p>
+
+                <p>Submitted: {{ attempt.submitted_at }}</p>
+
+                <p>
+                    Current objective score:
+                    {{ '%.2f'|format(attempt.score or 0) }}
+                </p>
+
+                <a class="button"
+                   href="{{ url_for('evaluate_attempt', attempt_id=attempt.id) }}">
+                    Review Answers
+                </a>
+            </article>
+        {% endfor %}
+
+    {% else %}
+
+        <p>No student attempts are waiting for evaluation.</p>
+
+    {% endif %}
+</main>
+</body>
+</html>
+```

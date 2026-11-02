@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extracted Text | SmartExam</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body { background: #f5f7ff; }
+        main {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 14px;
+        }
+        h1 { color: #2447a8; }
+        pre {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            padding: 20px;
+            background: #f5f7ff;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+        a { color: #2447a8; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>{{ material.title }}</h1>
+        <p><strong>File:</strong> {{ material.filename }}</p>
+        <h2>Extracted Text</h2>
+
+        {% if material.extracted_text %}
+            <pre>{{ material.extracted_text }}</pre>
+        {% else %}
+            <p>No extracted text is saved for this material. Upload it again after enabling text extraction.</p>
+        {% endif %}
+
+        <p><a href="{{ url_for('upload_material') }}">← Back to Study Materials</a></p>
+    </main>
+</body>
+</html>

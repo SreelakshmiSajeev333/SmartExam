@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartExam | Admin Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            color: #263238;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: #263b80;
+            color: white;
+            padding: 20px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 3px 12px rgba(38, 59, 128, 0.15);
+        }
+
+        .navbar h1 {
+            font-size: 24px;
+            letter-spacing: 0.2px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            background: #e74c3c;
+            padding: 10px 18px;
+            border-radius: 7px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .navbar a:hover {
+            background: #c0392b;
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1200px;
+            margin: 35px auto;
+            padding: 0 22px;
+        }
+
+        .welcome {
+            margin-bottom: 28px;
+        }
+
+        .welcome h2 {
+            font-size: 29px;
+            margin-bottom: 10px;
+            color: #263b80;
+        }
+
+        .welcome p {
+            color: #687386;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        /* Flash messages */
+        .flash-messages {
+            margin-bottom: 22px;
+        }
+
+        .flash {
+            background: #fff3cd;
+            color: #664d03;
+            border: 1px solid #ffe69c;
+            padding: 13px 16px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        /* Section headings */
+        .section-title {
+            color: #263b80;
+            font-size: 21px;
+            margin: 32px 0 18px;
+        }
+
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 23px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.035);
+            border: 1px solid #e8ecf5;
+            border-top: 4px solid #5269c9;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(38, 59, 128, 0.08);
+        }
+
+        .stat-card h3 {
+            color: #687386;
+            font-size: 13px;
+            font-weight: normal;
+            margin-bottom: 13px;
+            line-height: 1.5;
+        }
+
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #263b80;
+        }
+
+        /* Administration cards */
+        .management-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+            align-items: start;
+        }
+
+        .management-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e7ebf5;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.035);
+            min-width: 0;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .management-card:hover {
+            box-shadow: 0 7px 22px rgba(38, 59, 128, 0.07);
+        }
+
+        .management-card h3 {
+            color: #263b80;
+            font-size: 18px;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .management-card p {
+            color: #687386;
+            line-height: 1.7;
+            font-size: 14px;
+            margin-bottom: 14px;
+        }
+
+        .feature-list {
+            padding-left: 20px;
+            color: #4c5870;
+            line-height: 1.9;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            background: #263b80;
+            color: white;
+            text-decoration: none;
+            padding: 11px 16px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            background: #192c66;
+        }
+
+        /* Create Admin card */
+        .create-admin-card {
+            background: #ffffff;
+            border-top: 4px solid #5269c9;
+        }
+
+        .admin-heading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .admin-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            background: #eef1ff;
+            font-size: 20px;
+        }
+
+        .admin-heading h3 {
+            margin: 0;
+        }
+
+        .admin-note {
+            font-size: 13px !important;
+            margin-bottom: 17px !important;
+        }
+
+        .admin-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 13px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            min-width: 0;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            color: #35415a;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            min-width: 0;
+            padding: 11px 12px;
+            border: 1px solid #d8deeb;
+            border-radius: 7px;
+            background: #fbfcff;
+            color: #263238;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: #5269c9;
+            box-shadow: 0 0 0 3px rgba(82, 105, 201, 0.12);
+            background: #ffffff;
+        }
+
+        .form-group input::placeholder {
+            color: #a0a8b8;
+        }
+
+        .admin-form .btn {
+            grid-column: 1 / -1;
+            justify-self: start;
+            margin-top: 3px;
+            padding: 12px 20px;
+        }
+
+        .security-note {
+            margin-top: 15px;
+            padding: 11px 12px;
+            background: #f4f6ff;
+            border-radius: 7px;
+            color: #58658a;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* Information section */
+        .overview {
+            margin-top: 30px;
+            background: white;
+            padding: 25px;
+            border: 1px solid #e7ebf5;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.035);
+        }
+
+        .overview h3 {
+            color: #263b80;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .overview p {
+            color: #687386;
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            color: #8992a3;
+            padding: 30px 15px;
+            font-size: 13px;
+        }
+
+        /* Tablet */
+        @media (max-width: 900px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .management-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 18px 5%;
+            }
+
+            .navbar h1 {
+                font-size: 20px;
+            }
+
+            .container {
+                margin-top: 25px;
+                padding: 0 15px;
+            }
+
+            .stats-grid,
+            .management-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome h2 {
+                font-size: 24px;
+            }
+
+            .management-card {
+                padding: 20px;
+            }
+
+            .admin-form {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width,
+            .admin-form .btn {
+                grid-column: auto;
+            }
+
+            .admin-form .btn {
+                justify-self: stretch;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header class="navbar">
+        <h1>SmartExam | Admin Panel</h1>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </header>
+
+    <main class="container">
+
+        <!-- Welcome -->
+        <section class="welcome">
+            <h2>Welcome, Administrator!</h2>
+            <p>
+                Manage users, courses, examinations, and system activities
+                from one place.
+            </p>
+        </section>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <div class="flash">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- System Statistics -->
+        <h2 class="section-title">System Overview</h2>
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <h3>Total Users</h3>
+                <div class="number">{{ total_users }}</div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Total Teachers</h3>
+                <div class="number">{{ total_teachers }}</div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Total Students</h3>
+                <div class="number">{{ total_students }}</div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Total Courses</h3>
+                <div class="number">{{ total_courses }}</div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Total Examinations</h3>
+                <div class="number">{{ total_exams }}</div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Total Questions</h3>
+                <div class="number">{{ total_questions|default(0) }}</div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Study Materials</h3>
+                <div class="number">{{ total_materials|default(0) }}</div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Pending Evaluations</h3>
+                <div class="number">{{ pending_evaluations|default(0) }}</div>
+            </div>
+
+        </section>
+
+        <!-- Administration -->
+        <h2 class="section-title">Administration</h2>
+
+        <section class="management-grid">
+
+            <!-- User Management -->
+            <article class="management-card">
+                <h3>👥 User Management</h3>
+
+                <p>Manage registered user accounts and their roles.</p>
+
+                <ul class="feature-list">
+                    <li>View registered users</li>
+                    <li>Identify teachers and students</li>
+                    <li>Review account information</li>
+                    <li>Manage user roles and access</li>
+                </ul>
+
+                <a class="btn" href="{{ url_for('admin_users') }}">
+                    Manage Users →
+                </a>
+            </article>
+
+            <!-- Create Admin -->
+<article class="management-card">
+    <h3>👑 Create Admin</h3>
+
+    <p>
+        Create additional administrator accounts to help manage
+        the SmartExam platform.
+    </p>
+
+    <ul class="feature-list">
+        <li>Create administrator accounts</li>
+        <li>Provide secure login credentials</li>
+        <li>Restrict access to existing administrators</li>
+    </ul>
+
+    <a class="btn" href="{{ url_for('create_admin') }}">
+        Create Admin →
+    </a>
+</article>
+
+
+
+            <!-- Pending User Approvals -->
+            <article class="management-card">
+                <h3>✅ Pending User Approvals</h3>
+
+                <p>
+                    Review newly registered teacher and student accounts
+                    before allowing them to access SmartExam.
+                </p>
+
+                <ul class="feature-list">
+                    <li>View accounts awaiting approval</li>
+                    <li>Approve eligible registrations</li>
+                    <li>Reject pending registrations</li>
+                </ul>
+
+                <a class="btn" href="{{ url_for('admin_pending_users') }}">
+                    Review Pending Users →
+                </a>
+            </article>
+
+            <!-- Course Management -->
+            <article class="management-card">
+                <h3>📚 Course Management</h3>
+
+                <p>
+                    Manage academic courses and maintain course information.
+                </p>
+
+                <ul class="feature-list">
+                    <li>Create and view courses</li>
+                    <li>Manage course names and codes</li>
+                    <li>Maintain academic course information</li>
+                </ul>
+
+                <a class="btn" href="{{ url_for('admin_courses') }}">
+                    Manage Courses →
+                </a>
+            </article>
+
+            <!-- Teacher-Course Assignment -->
+            <article class="management-card">
+                <h3>👩‍🏫 Teacher-Course Assignment</h3>
+
+                <p>
+                    Assign courses to teachers and manage their
+                    teaching responsibilities.
+                </p>
+
+                <ul class="feature-list">
+                    <li>View registered teachers</li>
+                    <li>View available courses</li>
+                    <li>Assign teachers to courses</li>
+                    <li>Review existing assignments</li>
+                </ul>
+
+                <a class="btn" href="{{ url_for('admin_assignments') }}">
+                    Manage Assignments →
+                </a>
+            </article>
+
+            <!-- Examination Reports -->
+            <article class="management-card">
+                <h3>📊 Examination Reports</h3>
+
+                <p>
+                    Review examination activity and monitor student
+                    performance across the platform.
+                </p>
+
+                <ul class="feature-list">
+                    <li>View examinations</li>
+                    <li>Check examination status</li>
+                    <li>Review student participation</li>
+                    <li>View examination results and marks</li>
+                </ul>
+
+                <a class="btn" href="{{ url_for('admin_reports') }}">
+                    View Reports →
+                </a>
+            </article>
+
+        </section>
+
+        <!-- About SmartExam -->
+        <section class="overview">
+            <h3>About SmartExam Administration</h3>
+
+            <p>
+                The Administrator is responsible for user and role
+                management, academic organisation, teacher-course
+                mapping, and examination reporting. These functions
+                support the organised operation of the SmartExam platform.
+            </p>
+        </section>
+
+    </main>
+
+    <footer>
+        SmartExam &copy; 2026 |
+        Intelligent Examination Management System
+    </footer>
+
+</body>
+</html>
+

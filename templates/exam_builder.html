@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Builder | SmartExam</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            background: #f5f7ff;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 16px;
+        }
+
+        h1, h2 {
+            color: #2447a8;
+        }
+
+        label {
+            display: block;
+            margin: 18px 0 8px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d8deed;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .question-option {
+            display: block;
+            margin: 12px 0;
+            padding: 15px;
+            border: 1px solid #e5eaf5;
+            border-radius: 8px;
+        }
+
+        .question-option input {
+            margin-right: 8px;
+        }
+
+        button,
+        .button-link {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 12px 20px;
+            background: #2447a8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover,
+        .button-link:hover {
+            background: #193783;
+        }
+
+        .publish-button {
+            background: #16834a;
+        }
+
+        .publish-button:hover {
+            background: #106638;
+        }
+
+        .message {
+            margin: 12px 0;
+            padding: 12px;
+            background: #eef2ff;
+            border-radius: 8px;
+        }
+
+        .exam-card {
+            margin-top: 15px;
+            padding: 18px;
+            border: 1px solid #e5eaf5;
+            border-radius: 8px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 6px;
+            background: #fff3d6;
+            color: #875f00;
+            font-size: 13px;
+        }
+
+        .status-published {
+            background: #d9f7e5;
+            color: #126b3a;
+        }
+
+        a {
+            color: #2447a8;
+            text-decoration: none;
+        }
+
+        .empty-message {
+            color: #727d94;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 15px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="container">
+
+    <h1>Exam Builder</h1>
+    <p>Create an examination using your approved questions.</p>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            <div class="message">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <!-- Create Exam Form -->
+    <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <label for="title">Exam Title</label>
+        <input
+            type="text"
+            id="title"
+            name="title"
+            maxlength="200"
+            required
+        >
+
+        <label for="description">Description</label>
+        <textarea
+            id="description"
+            name="description"
+            rows="3"
+        ></textarea>
+
+        <label for="duration_minutes">Duration (minutes)</label>
+        <input
+            type="number"
+            id="duration_minutes"
+            name="duration_minutes"
+            min="1"
+            max="600"
+            value="60"
+            required
+        >
+
+        <h2 style="margin-top: 30px;">Select Questions</h2>
+
+        {% for question in questions %}
+            <label class="question-option">
+
+                <input
+                    type="checkbox"
+                    name="question_ids"
+                    value="{{ question.id }}"
+                >
+
+                <strong>{{ question.question_text }}</strong>
+
+                <br>
+
+                Type: {{ question.question_type }}
+                | Difficulty: {{ question.difficulty }}
+                | Marks: {{ question.marks }}
+
+            </label>
+        {% else %}
+            <p class="empty-message">
+                No approved questions available.
+                Approve questions before creating an exam.
+            </p>
+        {% endfor %}
+
+        {% if questions %}
+            <button type="submit">
+                Save Exam as Draft
+            </button>
+        {% endif %}
+
+    </form>
+
+    <hr style="margin: 35px 0;">
+
+    <!-- Existing Exams -->
+    <h2>Your Exams</h2>
+
+    {% for exam in exams %}
+
+        <div class="exam-card">
+
+            <h3>{{ exam.title }}</h3>
+
+            <p>
+                {{ exam.description or "No description provided." }}
+            </p>
+
+            <p>
+                <strong>Duration:</strong>
+                {{ exam.duration_minutes }} minutes
+            </p>
+
+            <p>
+                <strong>Total Marks:</strong>
+                {{ exam.total_marks }}
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+
+                {% if exam.status == "published" %}
+                    <span class="status status-published">
+                        Published
+                    </span>
+                {% else %}
+                    <span class="status">
+                        {{ exam.status|title }}
+                    </span>
+                {% endif %}
+            </p>
+
+            <p>
+                <strong>Questions:</strong>
+                {{ exam.questions|length }}
+            </p>
+
+            <!-- Publish Button: Draft Exams Only -->
+           {% if exam.status == "draft" %}
+    <div class="actions">
+        <a class="button-link" href="{{ url_for('edit_exam', exam_id=exam.id) }}">Edit Draft</a>
+        <form method="POST" action="{{ url_for('publish_exam', exam_id=exam.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit">Publish Exam</button>
+        </form>
+    </div>
+{% endif %}
+
+        </div>
+
+    {% else %}
+
+        <p class="empty-message">
+            You haven't created any exams yet.
+        </p>
+
+    {% endfor %}
+
+    <!-- Back to Dashboard -->
+    <p style="margin-top: 30px;">
+        <a href="{{ url_for('dashboard') }}">
+            ← Back to Dashboard
+        </a>
+    </p>
+
+</main>
+
+</body>
+</html>
+```

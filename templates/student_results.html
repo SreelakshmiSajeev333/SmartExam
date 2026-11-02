@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Results - SmartExam</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            color: #263238;
+        }
+
+        header {
+            background: #263b80;
+            color: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .wrap {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .result {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            margin: 16px 0;
+            box-shadow: 0 4px 12px #0000000a;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 7px;
+            background: #e8edff;
+            color: #263b80;
+        }
+
+        .muted { color: #687386; }
+    </style>
+</head>
+
+<body>
+<header>
+    <h1>My Results</h1>
+
+    <nav>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        &nbsp; | &nbsp;
+        <a href="{{ url_for('student_exams') }}">Available Exams</a>
+    </nav>
+</header>
+
+<main class="wrap">
+    {% if attempts %}
+
+        {% for attempt in attempts %}
+            <article class="result">
+                <h3>{{ attempt.exam.title }}</h3>
+
+                <p class="muted">
+                    Submitted:
+                    {{ attempt.submitted_at or 'Not submitted yet' }}
+                </p>
+
+                <p>
+                    <span class="badge">
+                        {{ attempt.status.replace('_', ' ')|title }}
+                    </span>
+                </p>
+
+                {% if attempt.status == 'in_progress' %}
+
+                    <p>This attempt has not been submitted.</p>
+
+                {% elif attempt.status == 'pending_evaluation' %}
+
+                    <p>
+                        Automatically marked score so far:
+                        <strong>
+                            {{ '%.2f'|format(attempt.score or 0) }}
+                        </strong>
+                        / {{ attempt.exam.total_marks }}.
+                        Written answers are awaiting teacher evaluation.
+                    </p>
+
+                {% else %}
+
+                    <p>
+                        Final score:
+                        <strong>
+                            {{ '%.2f'|format(attempt.score or 0) }}
+                        </strong>
+                        / {{ attempt.exam.total_marks }}
+                    </p>
+
+                {% endif %}
+            </article>
+        {% endfor %}
+
+    {% else %}
+
+        <p>You have not attempted any examinations yet.</p>
+
+    {% endif %}
+</main>
+</body>
+</html>
+```

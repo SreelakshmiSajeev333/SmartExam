@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartExam | Create Admin</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            color: #263238;
+        }
+
+        header {
+            background: #263b80;
+            color: white;
+            padding: 20px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        header h2 {
+            margin: 0;
+            font-size: 23px;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+            background: #e74c3c;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 520px;
+            margin: 55px auto;
+            padding: 0 18px;
+        }
+
+        .card {
+            background: white;
+            padding: 32px;
+            border-radius: 14px;
+            box-shadow: 0 5px 24px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e7ebf5;
+        }
+
+        .icon {
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eef1ff;
+            border-radius: 12px;
+            font-size: 28px;
+            margin-bottom: 18px;
+        }
+
+        h1 {
+            color: #263b80;
+            font-size: 25px;
+            margin: 0 0 10px;
+        }
+
+        .description {
+            color: #687386;
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #35415a;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d8deeb;
+            border-radius: 7px;
+            margin-bottom: 19px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #5269c9;
+            box-shadow: 0 0 0 3px rgba(82, 105, 201, 0.12);
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            background: #263b80;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #192c66;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #263b80;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .flash {
+            padding: 12px;
+            background: #fff3cd;
+            color: #664d03;
+            border-radius: 7px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .security {
+            background: #f4f6ff;
+            color: #58658a;
+            padding: 12px;
+            border-radius: 7px;
+            font-size: 12px;
+            line-height: 1.6;
+            margin-top: 18px;
+        }
+
+        @media (max-width: 500px) {
+            header {
+                padding: 17px 5%;
+            }
+
+            header h2 {
+                font-size: 19px;
+            }
+
+            .card {
+                padding: 23px;
+            }
+
+            .container {
+                margin-top: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h2>SmartExam | Admin Panel</h2>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </header>
+
+    <main class="container">
+        <section class="card">
+
+            <div class="icon">👑</div>
+
+            <h1>Create Administrator</h1>
+
+            <p class="description">
+                Create an additional administrator account.
+                Only an existing administrator can access this page.
+            </p>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="flash">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('create_admin') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <label for="name">Full Name</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Enter full name"
+                    maxlength="120"
+                    autocomplete="name"
+                    required
+                >
+
+                <label for="email">Email Address</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter email address"
+                    maxlength="255"
+                    autocomplete="email"
+                    required
+                >
+
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Minimum 8 characters"
+                    minlength="8"
+                    autocomplete="new-password"
+                    required
+                >
+
+                <button type="submit">Create Admin Account</button>
+
+            </form>
+
+            <div class="security">
+                🔒 Create accounts only for trusted individuals.
+                Administrator accounts have access to privileged
+                system functions.
+            </div>
+
+            <a class="back" href="{{ url_for('admin_dashboard') }}">
+                ← Back to Admin Dashboard
+            </a>
+
+        </section>
+    </main>
+
+</body>
+</html>
+```

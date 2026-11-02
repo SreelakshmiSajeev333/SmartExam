@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Course Management | SmartExam</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            color: #263238;
+            margin: 0;
+        }
+
+        .nav {
+            background: #263b80;
+            color: white;
+            padding: 18px 6%;
+        }
+
+        .nav a { color: white; }
+
+        .wrap {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 18px;
+        }
+
+        .panel {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            margin-bottom: 22px;
+        }
+
+        input, textarea {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 14px;
+            border: 1px solid #ccd3e2;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        label {
+            font-weight: bold;
+            color: #263b80;
+        }
+
+        .btn {
+            background: #263b80;
+            color: white;
+            border: 0;
+            padding: 10px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .danger { background: #b83232; }
+
+        .flash {
+            padding: 10px;
+            background: #fff3cd;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td, th {
+            text-align: left;
+            padding: 11px;
+            border-bottom: 1px solid #e7ebf5;
+        }
+
+        th { color: #263b80; }
+
+        .tablewrap { overflow-x: auto; }
+
+        .page-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.page-heading h2 {
+    color: #263b80;
+    margin: 0;
+}
+
+.back {
+    display: inline-block;
+    padding: 10px 15px;
+    background: #e9edfb;
+    color: #263b80;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.back:hover {
+    background: #dce3fa;
+}
+    </style>
+</head>
+
+<body>
+
+<header class="nav">
+    <h2>SmartExam</h2>
+</header>
+
+<main class="wrap">
+    <div class="page-heading">
+    <h2>📚 Course Management</h2>
+
+    <a class="back" href="{{ url_for('admin_dashboard') }}">
+        ← Admin Dashboard
+    </a>
+</div>
+
+    {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <section class="panel">
+
+        <h3>Create a Course</h3>
+
+        <form method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <label>Course Name *</label>
+            <input
+                type="text"
+                name="name"
+                maxlength="150"
+                required
+            >
+
+            <label>Course Code *</label>
+            <input
+                type="text"
+                name="code"
+                maxlength="30"
+                required
+            >
+
+            <label>Description</label>
+            <textarea
+                name="description"
+                rows="3"
+            ></textarea>
+
+            <button class="btn" type="submit">
+                Create Course
+            </button>
+
+        </form>
+
+    </section>
+
+    <section class="panel">
+
+        <h3>Existing Courses ({{ courses|length }})</h3>
+
+        <div class="tablewrap">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Code</th>
+                        <th>Description</th>
+                        <th>Assignments</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for course in courses %}
+
+                    <tr>
+                        <td>{{ course.name }}</td>
+                        <td>{{ course.code }}</td>
+                        <td>{{ course.description or '—' }}</td>
+                        <td>{{ course.teacher_assignments|length }}</td>
+
+                        <td>
+                            <form
+                                method="post"
+                                action="{{ url_for(
+                                    'admin_delete_course',
+                                    course_id=course.id
+                                ) }}"
+                                onsubmit="return confirm(
+                                    'Delete this course?'
+                                );"
+                            >
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                                <button
+                                    class="btn danger"
+                                    type="submit"
+                                >
+                                    Delete
+                                </button>
+
+                            </form>
+                        </td>
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="5">
+                            No courses yet. Create the first course above.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

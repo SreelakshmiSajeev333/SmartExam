@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | SmartExam</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<style>
+    body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 30px 20px;
+        background: #f5f7ff;
+        box-sizing: border-box;
+    }
+
+    .form-container {
+        width: 100%;
+        max-width: 450px;
+        padding: 40px;
+        background: #fff;
+        border: 1px solid #edf0f8;
+        border-radius: 18px;
+        box-shadow: 0 12px 40px rgba(36, 71, 168, 0.09);
+        box-sizing: border-box;
+    }
+
+    h1 {
+        text-align: center;
+        color: #20345b;
+        font-size: 32px;
+        margin: 0 0 10px;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #727d94;
+        font-size: 15px;
+        line-height: 1.6;
+        margin-bottom: 28px;
+    }
+
+    label {
+        display: block;
+        margin: 18px 0 8px;
+        color: #243451;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    input {
+        display: block;
+        width: 100%;
+        padding: 13px 14px;
+        border: 1px solid #dce2f0;
+        border-radius: 8px;
+        font-size: 15px;
+        box-sizing: border-box;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: #4169e1;
+        box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.12);
+    }
+
+    button {
+        width: 100%;
+        margin-top: 26px;
+        padding: 14px;
+        border: none;
+        border-radius: 9px;
+        background: #315bd6;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #2549b5;
+    }
+
+    .message {
+        padding: 10px 12px;
+        background: #fff4f2;
+        color: #b42318;
+        border-radius: 7px;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .account-message, .home-link {
+        text-align: center;
+        color: #727d94;
+        font-size: 14px;
+        margin-top: 24px;
+    }
+
+    a {
+        color: #315bd6;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    .home-link a {
+        color: #66748e;
+        font-weight: 500;
+    }
+
+    @media (max-width: 480px) {
+        .form-container {
+            padding: 28px 22px;
+        }
+
+        h1 {
+            font-size: 27px;
+        }
+    }
+</style>
+
+</head>
+
+<body>
+<div class="form-container">
+
+<h1>Welcome to SmartExam</h1>
+
+<p class="subtitle">
+    Log in to access your account and continue.
+</p>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <p class="message">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<form method="POST" action="{{ url_for('login') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <label for="email">Email Address</label>
+    <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="Enter your email address"
+        autocomplete="email"
+        required
+    >
+
+    <label for="password">Password</label>
+    <input
+        type="password"
+        id="password"
+        name="password"
+        placeholder="Enter your password"
+        autocomplete="current-password"
+        required
+    >
+
+    <button type="submit">Log In</button>
+
+</form>
+
+<p class="account-message">
+    Don't have an account?
+    <a href="{{ url_for('register') }}">Create Account</a>
+</p>
+
+<p class="home-link">
+    <a href="{{ url_for('home') }}">← Return to Homepage</a>
+</p>
+
+</div>
+</body>
+</html>
